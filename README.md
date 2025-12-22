@@ -19,7 +19,7 @@ This project investigates the relationship between **explicit lyrics** and **com
 
 ### **Libraries Used**
 * `tidyverse` (dplyr, readr, stringr) - Data manipulation
-* `tidytext` - Tokenization and sentiment analysis
+* `tidytext` - Tokenisation and sentiment analysis
 * `ggplot2` - Data visualisation
 * `gridExtra` - Arranging multiple plots on a single grid
 * `scales` - Formatting chart axes and labels
@@ -63,7 +63,7 @@ This project investigates the relationship between **explicit lyrics** and **com
     Ensure your `datasets/` folder contains the Musicoset `.csv` files as structured [here](#-repository-structure).
 
 4.  **Run the Script**
-    Execute `draft 3.R` to generate the clean dataframes and render the visualizations.
+    Execute `main.R` to generate the clean dataframes and render the visualisations.
 
 ---
 

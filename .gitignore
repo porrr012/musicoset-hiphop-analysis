@@ -1,0 +1,32 @@
+# Secrets
+*.env
+.env
+
+# RStudio files
+.Rhistory
+.Rapp.history
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# Data
+*.csv
+*.dat
+*.tab
+
+# Outputs
+outputs/
+figures/
+*.html
+*.pdf
+*.png
+*.jpg
+*.mp4
+*.xlsx
+*.spv
+*.twb*
+
+# System files
+.DS_Store
+Thumbs.db

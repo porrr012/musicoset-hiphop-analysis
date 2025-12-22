@@ -39,9 +39,9 @@ This project investigates the relationship between **explicit lyrics** and **com
 │   │   └── lyrics.csv
 │   └── profanity_lexicon/
 │       └── array.js
-├── images/                 # Save your exported plots here (optional but recommended)
-├── hiphop_profanity_analysis.R  # Your main R script (renamed from draft 3.R)
-└── README.md               # The documentation file we just created
+├── images/
+├── main.R
+└── README.md
 ```
 
 ---

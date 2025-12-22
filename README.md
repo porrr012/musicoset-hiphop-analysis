@@ -1,7 +1,7 @@
 # 🎵 Hip-Hop/Rap Songs Analysis (2000–2019)
 
 ## 📌 Project Overview
-This project investigates the relationship between **explicit lyrics** and **commercial success** in Hip-Hop music during the digital era (2000–2019). Using the **Musicoset** database, we apply text mining and statistical regression to challenge the popular assumption that "vulgarity sells."
+This project investigates the relationship between **explicit lyrics** and **commercial success** in Hip-Hop music during the digital era (2000–2019). Using the **Musicoset** dataset, we apply text mining and statistical regression to challenge the popular assumption that "vulgarity sells."
 
 **Key Research Questions:**
 1.  What are the most frequently used explicit terms in modern Hip-Hop?
@@ -23,7 +23,6 @@ This project investigates the relationship between **explicit lyrics** and **com
 * `ggplot2` - Data visualisation
 * `gridExtra` - Arranging multiple plots on a single grid
 * `scales` - Formatting chart axes and labels
-
 
 ## 📂 Repository Structure
 ```bash
@@ -61,7 +60,7 @@ This project investigates the relationship between **explicit lyrics** and **com
     ```
 
 3.  **Load the Data**
-    Ensure your `datasets/` folder contains the Musicoset `.csv` files as structured here.
+    Ensure your `datasets/` folder contains the Musicoset `.csv` files as structured [here](#-repository-structure).
 
 4.  **Run the Script**
     Execute `draft 3.R` to generate the clean dataframes and render the visualizations.

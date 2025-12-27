@@ -7,7 +7,7 @@
 .Rapp.history
 .Rproj.user
 .Rhistory
-.RData
+.RData*
 .Ruserdata
 
 # Data

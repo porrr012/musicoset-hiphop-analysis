@@ -41,6 +41,7 @@ This project investigates the relationship between **explicit lyrics** and **com
 │       └── array.js
 ├── images/
 ├── main.R
+├── musicoset-hiphop-analysis.Rproj
 └── README.md
 ```
 
@@ -53,17 +54,17 @@ This project investigates the relationship between **explicit lyrics** and **com
     git clone [https://github.com/porrr012/musicoset-hiphop-analysis.git](https://github.com/porrr012/musicoset-hiphop-analysis.git)
     ```
 
-2.  **Install Required R Packages**
-    Open RStudio and run:
+2. Double-click the musicoset-hiphop-analysis.Rproj file to open RStudio.
+
+3.  **Install Required R Packages**  
     ```r
     install.packages(c("tidyverse", "tidytext", "ggplot2", "gridExtra", "scales"))
     ```
 
-3.  **Load the Data**
-    Ensure your `datasets/` folder contains the Musicoset `.csv` files as structured [here](#-repository-structure).
+3.   **Load the datasets** from [musicoset](https://marianaossilva.github.io/DSW2019/index.html#tables) and [badwords](https://github.com/MauriceButler/badwords)  
+    Ensure `datasets/` folder contains the Musicoset `.csv` and `array.js` files as structured [here](#-repository-structure).
 
-4.  **Run the Script**
-    Execute `main.R` to generate the clean dataframes and render the visualisations.
+5.  **Run `main.R` Script**
 
 ---
 

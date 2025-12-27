@@ -61,8 +61,8 @@ This project investigates the relationship between **explicit lyrics** and **com
     install.packages(c("tidyverse", "tidytext", "ggplot2", "gridExtra", "scales"))
     ```
 
-3.   **Load the datasets** from [musicoset](https://marianaossilva.github.io/DSW2019/index.html#tables) and [badwords](https://github.com/MauriceButler/badwords)  
-    Ensure `datasets/` folder contains the Musicoset `.csv` and `array.js` files as structured [here](#-repository-structure).
+3.   **Load the datasets** from [musicoset](https://marianaossilva.github.io/DSW2019/index.html#tables).  
+    Ensure `datasets/` folder contains the Musicoset `.csv` files as structured [here](#-repository-structure).
 
 5.  **Run `main.R` Script**
 

@@ -1,6 +1,4 @@
 # Required Libraries ------------------------------------------------------
-library(readr)
-library(stringr)
 library(tidyverse)
 library(tidytext)
 library(ggplot2)

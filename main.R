@@ -3,6 +3,7 @@ library(tidyverse)
 library(tidytext)
 library(ggplot2)
 library(gridExtra)
+library(grid)
 library(scales)
 
 # 1. LOAD THE DATASETS ----------------------------------------------------
@@ -71,14 +72,14 @@ pop_aggregated <- pop_raw %>%
   ) %>%
   ungroup()
 
-## D. Prepare Release Year (Only Songs Released 2000 Onwards) ------------
-release_year_2000 <- tracks_raw %>%
+## D. Prepare Release Year (Only Songs Released During 1990-2018) ------------
+release_year_filtered <- tracks_raw %>%
   mutate(release_year = as.numeric(str_sub(release_date, 1, 4))) %>%
-  filter(release_year >= 2000) %>%
+  filter(release_year >= 1990 & release_year <= 2018) %>%
   select(song_id, release_year)
 
-songs_2000 <- songs_raw %>%
-  inner_join(release_year_2000, by = "song_id")
+songs_filtered <- songs_raw %>%
+  inner_join(release_year_filtered, by = "song_id")
 
 # 3. DEFINE HIP-HOP ARTISTS & SONGS -------------------------
 pattern_strict  <- "\\b(rap|hip|drill|grime|urban)\\b"
@@ -94,7 +95,7 @@ hiphop_artist_ids <- artists_raw %>%
   pull(artist_id)
 
 # Filter Songs (Match songs to Hip-Hop Artists)
-song_hiphop_artist_match <- songs_2000 %>%
+song_hiphop_artist_match <- songs_filtered %>%
   select(song_id, artists) %>%
   mutate(artist_id_extracted = str_extract_all(artists, "'[a-zA-Z0-9]{22}':")) %>%
   unnest(artist_id_extracted) %>%
@@ -103,7 +104,7 @@ song_hiphop_artist_match <- songs_2000 %>%
   distinct(song_id, artist_id) # Keep artist_id for later grouping
 
 # 4. CREATE MASTER DATASET -------------------------
-hiphop_master <- songs_2000 %>%
+hiphop_master <- songs_filtered %>%
   # inner_join duplicates rows when song contains multiple artists
   semi_join(song_hiphop_artist_match, by = "song_id") %>%
   left_join(features_raw, by = "song_id") %>%
@@ -116,7 +117,7 @@ hiphop_master <- songs_2000 %>%
 hiphop_ids <- unique(song_hiphop_artist_match$song_id)
 
 # B. Create Master Table
-songs_master <- songs_2000 %>%
+songs_master <- songs_filtered %>%
   # 1. CREATE GENRE COLUMN: Check if the song is in our Hip-Hop list
   mutate(
     genre_group = if_else(song_id %in% hiphop_ids, "Hip-Hop", "Other")
@@ -137,16 +138,6 @@ songs_master <- songs_2000 %>%
 
 # Check the split
 print(table(songs_master$genre_group))
-
-# Charts Ideas ------------------------------------------------------------
-
-# 1. Frequency of curse words
-# 2. Song/Artist with most curse words
-# 3. scatterplot (corelation: profanity vs popularity)
-# 4. Acoustic features Hiphop vs other
-# 5. Proportion of Hiphop songs (Side-by-side clean vs explicit)
-# 6. Radar Chart for Hiphop vs other 3 top genres.
-# 7. Usage of profanity over time (trendline)
 
 # PLOT --------------------------------------------------------------------
 ## 1. Frequency of curse words (Bar chart) ----------
@@ -216,64 +207,7 @@ p2 <- ggplot(other_data, aes(x = profanity_count, y = total_success_score)) +
 
 grid.arrange(p1, p2, ncol = 2)
 
-## 3. Proportion of Hiphop songs to popular songs ------------------------------
-### Donut Chart ####
-# 1. Prepare Data
-pop_market_share <- songs_master %>%
-  filter(is_pop == TRUE) %>%
-  count(genre_group) %>%
-  mutate(
-    percentage = n / sum(n),
-    # Create nice labels
-    label_text = paste0(genre_group, "\n", percent(percentage, accuracy = 0.1))
-  )
-
-# 2. Plot Donut
-ggplot(pop_market_share, aes(x = 2, y = percentage, fill = genre_group)) +
-  geom_bar(stat = "identity", color = "white") +
-  
-  # Turn Bar into Circle
-  coord_polar(theta = "y", start = 0) +
-  
-  # Create the Hole (The "Donut" effect)
-  xlim(0.5, 2.5) +
-  
-  # Colors (Matches your other charts)
-  scale_fill_manual(values = c("Hip-Hop" = "firebrick", "Other" = "#4682B4")) +
-  
-  # Clean Theme (Remove axes/grid)
-  theme_void() +
-  theme(
-    legend.position = "none",
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 14)
-  ) +
-  
-  # Add Text Labels
-  geom_text(aes(label = label_text), 
-            position = position_stack(vjust = 0.5), 
-            color = "white", size = 5, fontface = "bold") +
-  
-  labs(title = "Share of Popular Music (2000–2019)")
-
-### Stacked Bar Chart ####
-ggplot(songs_master %>% filter(is_pop == TRUE), aes(x = "Popular Songs", fill = genre_group)) +
-  
-  # Draw the Bar
-  geom_bar(position = "fill", width = 0.6) +
-  
-  # Add Labels inside the bar
-  geom_text(aes(label = ..count..), stat = "count", position = position_fill(vjust = 0.5), 
-            color = "white", fontface = "bold", size = 5) +
-  
-  # Formatting
-  scale_y_continuous(labels = scales::percent) +
-  scale_fill_manual(values = c("Hip-Hop" = "firebrick", "Other" = "#4682B4")) +
-  theme_minimal() +
-  labs(title = "Market Share: Hip-Hop vs. Other Genres",
-       y = "Percentage", x = NULL) +
-  coord_flip() # Flips it to be horizontal (looks like a progress bar)
-
-## 4. Proportion of Hiphop songs to Clean and Explicit -----------------------
+## 3. Proportion of Hiphop songs to Clean and Explicit -----------------------
 explicit_composition <- songs_master %>%
   filter(!is.na(explicit)) %>%
   
@@ -309,8 +243,59 @@ ggplot(explicit_composition, aes(x = content_rating, y = percentage, fill = genr
   ) +
   labs(
     title = "Genre Dominance: Explicit vs. Clean Music",
-    subtitle = "Proportion of Hip-Hop within explicit and non-explicit tracks (Dataset: 2000–2019)",
+    subtitle = "Proportion of Hip-Hop within explicit and non-explicit tracks (Dataset: 1990-2018)",
     x = NULL,
     y = "Proportion",
     fill = "Genre"
   )
+
+## 4. Temporal Trend Analysis (3 Separate Charts) ----------------------------
+
+# A. Prepare the Dataframes
+# 1. Trend for ALL songs (Global Baseline)
+trend_all <- songs_master %>%
+  filter(!is.na(release_year)) %>%
+  group_by(release_year) %>%
+  summarise(avg_profanity = mean(profanity_count, na.rm = TRUE)) %>%
+  mutate(category = "All Genres")
+
+# 2. Trend for Hip-Hop
+trend_hiphop <- songs_master %>%
+  filter(!is.na(release_year) & genre_group == "Hip-Hop") %>%
+  group_by(release_year) %>%
+  summarise(avg_profanity = mean(profanity_count, na.rm = TRUE)) %>%
+  mutate(category = "Hip-Hop")
+
+# 3. Trend for Other Genres
+trend_other <- songs_master %>%
+  filter(!is.na(release_year) & genre_group == "Other") %>%
+  group_by(release_year) %>%
+  summarise(avg_profanity = mean(profanity_count, na.rm = TRUE)) %>%
+  mutate(category = "Other Genres")
+
+# B. Create the Plots Function (to avoid repeating code)
+create_trend_plot <- function(data, plot_color, plot_title) {
+  ggplot(data, aes(x = release_year, y = avg_profanity)) +
+    geom_line(color = plot_color, size = 1.1) +
+    geom_point(color = plot_color, size = 2) +
+    geom_smooth(method = "loess", color = "black", linetype = "dashed", se = FALSE, size = 0.5) +
+    scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
+    # Consistent Y-axis limits so visual comparison is valid (0 to max of Hip-Hop)
+    scale_y_continuous(limits = c(0, max(trend_hiphop$avg_profanity) + 5)) +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(face = "bold", size = 12),
+      axis.title.x = element_blank() # Hide X label for top charts to save space
+    ) +
+    labs(title = plot_title, y = "Avg Profanity")
+}
+
+# C. Generate the 3 Plots
+p_all <- create_trend_plot(trend_all, "purple", "1. Industry Average (All Songs)")
+p_hh  <- create_trend_plot(trend_hiphop, "firebrick", "2. Hip-Hop (Target Genre)")
+p_oth <- create_trend_plot(trend_other, "#4682B4", "3. Other Genres (Control Group)") + 
+  theme(axis.title.x = element_text()) + labs(x = "Release Year") # Add X label to bottom plot
+
+# D. Arrange them on one page
+grid.arrange(p_all, p_hh, p_oth, ncol = 1, 
+             top = textGrob("Evolution of Profanity (1990–2018)", gp = gpar(fontsize = 16, fontface = "bold")))

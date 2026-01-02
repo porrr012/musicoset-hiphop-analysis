@@ -7,7 +7,7 @@ library(grid)
 library(scales)
 
 # 1. LOAD THE DATASETS ----------------------------------------------------
-# Update paths if necessary based on your folder structure
+# https://marianaossilva.github.io/DSW2019/
 charts_raw   <- read_delim("datasets/musicoset_popularity/song_chart.csv", delim = "\t", escape_double = FALSE, trim_ws = TRUE)
 artists_raw  <- read_delim("datasets/musicoset_metadata/artists.csv", delim = "\t", escape_double = FALSE, trim_ws = TRUE)
 songs_raw    <- read_delim("datasets/musicoset_metadata/songs.csv", delim = "\t", escape_double = FALSE, trim_ws = TRUE)

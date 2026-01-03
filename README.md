@@ -41,6 +41,9 @@ This phenomenon is unique to Hip-Hop; control groups (Pop, Rock) showed zero cor
 │   │   └── lyrics.csv
 │   └── profanity_lexicon/
 │       └── array.js
+├── illustrations/
+│       └── images/
+│              └──screenshots/
 ├── main.R
 ├── musicoset-hiphop-analysis.Rproj
 └── README.md

@@ -203,13 +203,13 @@ create_trend_plot <- function(data, plot_color, plot_title) {
     labs(title = plot_title, y = "Avg Profanity")
 }
 
-# C. Generate the 3 Plots
+# Generate the 3 Plots
 p_all <- create_trend_plot(trend_all, "purple", "1. Industry Average (All Songs)")
 p_hh  <- create_trend_plot(trend_hiphop, "firebrick", "2. Hip-Hop (Target Genre)")
 p_oth <- create_trend_plot(trend_other, "#4682B4", "3. Other Genres (Control Group)") + 
   theme(axis.title.x = element_text()) + labs(x = "Release Year") # Add X label to bottom plot
 
-# D. Arrange them on one page
+# Arrange them on one page
 grid.arrange(p_all, p_hh, p_oth, ncol = 1, 
              top = textGrob("Evolution of Profanity (1990–2018)", gp = gpar(fontsize = 16, fontface = "bold")))
 

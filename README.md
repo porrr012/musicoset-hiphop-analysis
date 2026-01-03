@@ -49,13 +49,13 @@ This project investigates the relationship between **explicit lyrics** and **com
 
 ## 🚀 How to Run the Analysis
 
-1.  **Clone the Repository**
+1.  **Clone the Repository**  
     Open your terminal (or Git Bash) and run:
     ```bash
     git clone https://github.com/porrr012/musicoset-hiphop-analysis.git
     ```
 
-2. Double-click the musicoset-hiphop-analysis.Rproj file to open RStudio.
+2. Double-click the musicoset-hiphop-analysis.Rproj to open RStudio.
 
 3.  **Install Required R Packages**  
     ```r

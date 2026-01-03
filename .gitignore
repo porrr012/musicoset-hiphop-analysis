@@ -28,6 +28,9 @@ figures/
 *.spv
 *.twb*
 
+# Exceptions
+!illustrations/images/screenshots/*
+
 # System files
 .DS_Store
 Thumbs.db

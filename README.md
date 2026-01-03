@@ -75,7 +75,7 @@ This phenomenon is unique to Hip-Hop; control groups (Pop, Rock) showed zero cor
 
 ### 📄 References & Data Sources
 
-* **Dataset:** [Musicoset: Music Data for Text Mining](https://marianaossilva.github.io/DSW2019/) (Silva et al., 2019)
+* **Dataset:** [*MusicOSet*: An Enhanced Open Dataset for Music Data Mining](https://marianaossilva.github.io/DSW2019/) (Silva et al., 2019)
 * **Profanity Lexicon:** [badwords](https://github.com/MauriceButler/badwords) (Butler, n.d.)
 
 ---

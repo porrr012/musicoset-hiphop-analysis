@@ -29,7 +29,7 @@ figures/
 *.twb*
 
 # Exceptions
-!illustrations/images/screenshots/*
+!illustrations/**
 
 # System files
 .DS_Store

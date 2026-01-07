@@ -59,7 +59,7 @@ This phenomenon is unique to Hip-Hop; control groups (Pop, Rock) showed zero cor
     git clone https://github.com/porrr012/musicoset-hiphop-analysis.git
     ```
 
-2. Double-click the musicoset-hiphop-analysis.Rproj to open RStudio.
+2. Double-click the `musicoset-hiphop-analysis.Rproj` to open RStudio.
 
 3.  **Install Required R Packages**  
     ```r

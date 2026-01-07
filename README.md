@@ -23,6 +23,7 @@ This phenomenon is unique to Hip-Hop; control groups (Pop, Rock) showed zero cor
 * `tidyverse` (dplyr, readr, stringr) - Data manipulation
 * `tidytext` - Tokenisation and sentiment analysis
 * `ggplot2` - Data visualisation
+* `grid` - Plot layouts and annotations
 * `gridExtra` - Arranging multiple plots on a single grid
 * `scales` - Formatting chart axes and labels
 ---

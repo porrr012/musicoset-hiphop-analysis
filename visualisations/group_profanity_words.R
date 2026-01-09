@@ -1,10 +1,7 @@
 # ==============================================================================
-# CONTENT WARNING: 
-# This script contains explicit language filters required for data processing.
+# CONTENT WARNING: This script contains profanity filters required for data processing.
+# DO NOT read below this line if you do not wish to be exposed to profane words
 # ==============================================================================
-
-library(dplyr)
-library(stringr)
 
 # Function to group explicit terms by root word
 group_profanity_words <- function(data) {

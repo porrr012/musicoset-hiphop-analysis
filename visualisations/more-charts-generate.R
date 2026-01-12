@@ -7,8 +7,11 @@
 library(tidyverse)
 library(tidytext)
 library(ggplot2)
+library(ggpubr)
+library(ggrepel)
 library(grid)
 library(gridExtra)
+library(patchwork)
 library(scales)
 
 # 1. LOAD THE DATASETS ----------------------------------------------------
@@ -191,7 +194,7 @@ profanity_freq <- songs_master %>%
   # B. Dynamic Masking Step
   mutate(word_display = str_replace_all(word_root, "[aeiou]", "*")) %>%
   count(word_display, sort = TRUE) %>%
-  slice_max(n, n = 15)
+  slice_max(n, n = 10)
 
 # --- 2. Plot Chart ---
 p2_words <-
@@ -204,7 +207,7 @@ p2_words <-
  
    labs(
     title = "The Vocabulary of Explicit Content",
-    subtitle = "Top 15 most frequently used profane words in Hip-Hop/Rap",
+    subtitle = "Top 10 most frequently used profane words in Hip-Hop/Rap",
     x = NULL, 
     y = NULL 
   ) +
@@ -256,10 +259,6 @@ p3_genre <-
   )
 
 ## (D) Correlation --------------------------------------------
-library(tidyverse)
-library(ggpubr)
-library(ggrepel)
-
 # --- 1. Identify the Two Outliers ---
 
 # Outlier A: The Most Explicit Song (Max Profanity)
@@ -292,7 +291,7 @@ p4_correlation <-
   
   # 4b. Label: Most Successful (GREEN/TEAL)
   geom_label_repel(data = top_success_outlier,
-                   aes(label = paste0("Most Popular:\n", song_name)),
+                   aes(label = paste0("Most Successful:\n", song_name)),
                    size = 3, fontface = "bold", color = "#117A65", # Professional Green
                    box.padding = 0.5, point.padding = 0.3,
                    nudge_y = 15, nudge_x = -10) +
@@ -301,7 +300,7 @@ p4_correlation <-
   stat_cor(method = "pearson", 
            label.x.npc = "left", label.y.npc = "top",
            size = 4, fontface = "italic", color = "#2C3E50",
-           p.accuracy = 0.001, r.accuracy = 0.01) +
+           p.accuracy = 0.01, r.accuracy = 0.001) +
   
   # 6. Colors & Scales
   scale_color_gradient(low = "#34495E", high = "#E74C3C", guide = "none") +
@@ -309,9 +308,9 @@ p4_correlation <-
   
   # 7. Styling
   labs(
-    title = "Does Profanity Drive Popularity?",
+    title = "Does Profanity Drive Commercial Success?",
     subtitle = "Correlation between commercial success and explicit content volume",
-    x = "Popularity Score (0-100)",
+    x = "Total Success Score",
     y = "Profanity Count per Song"
   ) +
   theme_minimal(base_size = 14) +

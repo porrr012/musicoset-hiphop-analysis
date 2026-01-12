@@ -1,5 +1,5 @@
 # ==============================================================================
-# PROJECT: HIP-HOP AUTHENTICITY ANALYSIS (1990-2018)
+# PROJECT: HIP-HOP/RAP AUTHENTICITY ANALYSIS (1990-2018)
 # ==============================================================================
 
 # Required Libraries ------------------------------------------------------
@@ -85,7 +85,7 @@ release_year_filtered <- tracks_raw %>%
 songs_filtered <- songs_raw %>%
   inner_join(release_year_filtered, by = "song_id")
 
-# 3. DEFINE HIP-HOP ARTISTS & SONGS -------------------------
+# 3. DEFINE HIP-HOP/RAP ARTISTS & SONGS -------------------------
 pattern_strict  <- "\\b(rap|hip|drill|grime|urban)\\b"
 pattern_loose   <- "hop|trap"
 
@@ -98,7 +98,7 @@ hiphop_artist_ids <- artists_raw %>%
   ) %>%
   pull(artist_id)
 
-# Filter Songs (Match songs to Hip-Hop Artists)
+# Filter Songs (Match songs to Hip-Hop/Rap Artists)
 song_hiphop_artist_match <- songs_filtered %>%
   select(song_id, artists) %>%
   mutate(artist_id_extracted = str_extract_all(artists, "'[a-zA-Z0-9]{22}':")) %>%
@@ -113,7 +113,7 @@ hiphop_ids <- unique(song_hiphop_artist_match$song_id)
 # 4. CREATE MASTER DATASET -------------------------
 songs_master <- songs_filtered %>%
   mutate(
-    genre_group = if_else(song_id %in% hiphop_ids, "Hip-Hop", "Other")
+    genre_group = if_else(song_id %in% hiphop_ids, "Hip-Hop/Rap", "Other")
   ) %>%
   left_join(pop_aggregated, by = "song_id") %>%
   left_join(charts_aggregated, by = "song_id") %>%
@@ -148,7 +148,7 @@ ggplot(explicit_composition, aes(x = content_rating, y = percentage, fill = genr
   
   # Formatting
   scale_y_continuous(labels = scales::percent) +
-  scale_fill_manual(values = c("Hip-Hop" = "firebrick", "Other" = "#4682B4")) +
+  scale_fill_manual(values = c("Hip-Hop/Rap" = "firebrick", "Other" = "#4682B4")) +
   theme_minimal() +
   theme(
     plot.title = element_text(face = "bold", size = 14),
@@ -159,7 +159,7 @@ ggplot(explicit_composition, aes(x = content_rating, y = percentage, fill = genr
   ) +
   labs(
     title = "Genre Dominance: Explicit vs. Clean Music",
-    subtitle = "Proportion of Hip-Hop within explicit and non-explicit tracks (Dataset: 1990-2018)",
+    subtitle = "Proportion of Hip-Hop/Rap within explicit and non-explicit tracks (Dataset: 1990-2018)",
     x = NULL,
     y = "Proportion",
     fill = "Genre"
@@ -173,12 +173,12 @@ trend_all <- songs_master %>%
   summarise(avg_profanity = mean(profanity_count, na.rm = TRUE)) %>%
   mutate(category = "All Genres")
 
-# 2. Trend for Hip-Hop
+# 2. Trend for Hip-Hop/Rap
 trend_hiphop <- songs_master %>%
-  filter(!is.na(release_year) & genre_group == "Hip-Hop") %>%
+  filter(!is.na(release_year) & genre_group == "Hip-Hop/Rap") %>%
   group_by(release_year) %>%
   summarise(avg_profanity = mean(profanity_count, na.rm = TRUE)) %>%
-  mutate(category = "Hip-Hop")
+  mutate(category = "Hip-Hop/Rap")
 
 # 3. Trend for Other Genres
 trend_other <- songs_master %>%
@@ -194,7 +194,7 @@ create_trend_plot <- function(data, plot_color, plot_title) {
     geom_point(color = plot_color, size = 2) +
     geom_smooth(method = "loess", color = "black", linetype = "dashed", se = FALSE, size = 0.5) +
     scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
-    # Consistent Y-axis limits so visual comparison is valid (0 to max of Hip-Hop)
+    # Consistent Y-axis limits so visual comparison is valid (0 to max of Hip-Hop/Rap)
     scale_y_continuous(limits = c(0, max(trend_hiphop$avg_profanity) + 5)) +
     theme_minimal() +
     theme(
@@ -206,7 +206,7 @@ create_trend_plot <- function(data, plot_color, plot_title) {
 
 # Generate the 3 Plots
 p_all <- create_trend_plot(trend_all, "purple", "1. Industry Average (All Songs)")
-p_hh  <- create_trend_plot(trend_hiphop, "firebrick", "2. Hip-Hop (Target Genre)")
+p_hh  <- create_trend_plot(trend_hiphop, "firebrick", "2. Hip-Hop/Rap (Target Genre)")
 p_oth <- create_trend_plot(trend_other, "#4682B4", "3. Other Genres (Control Group)") + 
   theme(axis.title.x = element_text()) + labs(x = "Release Year") # Add X label to bottom plot
 
@@ -214,10 +214,9 @@ p_oth <- create_trend_plot(trend_other, "#4682B4", "3. Other Genres (Control Gro
 grid.arrange(p_all, p_hh, p_oth, ncol = 1, 
              top = textGrob("Evolution of Profanity (1990–2018)", gp = gpar(fontsize = 16, fontface = "bold")))
 
-## 3. Corelation: profanity vs Commercial Success (Scatterplots) ------------------
+## 3. Corelation: Profanity vs Commercial Success (Scatterplots) ------------------
 hiphop_data <- songs_master %>% 
-  filter(genre_group == "Hip-Hop") %>%
-  select(total_success_score, profanity_count) %>%
+  filter(genre_group == "Hip-Hop/Rap") %>%
   filter(!is.na(total_success_score) & !is.na(profanity_count))
 
 other_data <- songs_master %>% 
@@ -236,7 +235,7 @@ p1 <- ggplot(hiphop_data, aes(x = profanity_count, y = total_success_score)) +
   geom_smooth(method = "lm", formula = 'y ~ x', color = "firebrick") +
   theme_minimal() +
   labs(
-    title = "Hip-Hop: Profanity vs. Success",
+    title = "Hip-Hop/Rap: Profanity vs. Success",
     subtitle = paste0("Pearson's r = ", round(cor_hiphop$estimate, 3)),
     x = "Explicit Terms",
     y = "Popularity Score"

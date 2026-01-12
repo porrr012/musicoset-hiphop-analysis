@@ -60,7 +60,7 @@ profanity_per_song <- lyrics_clean %>%
   filter(word %in% bad_words_list) %>%
   count(song_id, name = "profanity_count")
 
-## C. Aggregate Data to avoid explosion ---------------------------------------
+## C. AGGREGATE TO AVOID EXPLOSION ---------------------------------------
 charts_aggregated <- charts_raw %>%
   group_by(song_id) %>%
   summarise(
@@ -76,7 +76,7 @@ pop_aggregated <- pop_raw %>%
   ) %>%
   ungroup()
 
-## D. Prepare Release Year (Only Songs Released During 1990-2018) ------------
+## D. FILTER RELEASE YEAR (1990-2018) ------------------------
 release_year_filtered <- tracks_raw %>%
   mutate(release_year = as.numeric(str_sub(release_date, 1, 4))) %>%
   filter(release_year >= 1990 & release_year <= 2018) %>%
@@ -214,13 +214,15 @@ p_oth <- create_trend_plot(trend_other, "#4682B4", "3. Other Genres (Control Gro
 grid.arrange(p_all, p_hh, p_oth, ncol = 1, 
              top = textGrob("Evolution of Profanity (1990–2018)", gp = gpar(fontsize = 16, fontface = "bold")))
 
-## 3. Corelation: profanity vs popularity (Scatterplots) ------------------
+## 3. Corelation: profanity vs Commercial Success (Scatterplots) ------------------
 hiphop_data <- songs_master %>% 
   filter(genre_group == "Hip-Hop") %>%
+  select(total_success_score, profanity_count) %>%
   filter(!is.na(total_success_score) & !is.na(profanity_count))
 
 other_data <- songs_master %>% 
   filter(genre_group == "Other") %>%
+  select(total_success_score, profanity_count) %>%
   filter(!is.na(total_success_score) & !is.na(profanity_count))
 
 cor_hiphop <- cor.test(hiphop_data$profanity_count, 

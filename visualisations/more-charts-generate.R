@@ -1,6 +1,6 @@
 # ==============================================================================
 # PROJECT: HIP-HOP/RAP AUTHENTICITY ANALYSIS (1990-2018)
-# FOR VISUALISATIONS
+# FOR ADDATIONAL VISUALISATIONS
 # ==============================================================================
 
 # Required Libraries ------------------------------------------------------
@@ -134,7 +134,7 @@ songs_master <- songs_filtered %>%
 
 # PLOT --------------------------------------------------------------------
 ## (Figure 1) Temporal Trend -------------------------------------------------
-# Data Prep
+# --- Data Prep ---
 trend_hiphop <- songs_master %>%
   filter(!is.na(release_year) & genre_group == "Hip-Hop/Rap") %>%
   group_by(release_year) %>%
@@ -199,7 +199,7 @@ p2_genre <-
   # --- Direct Labeling ---
   geom_text(aes(label = paste0(genre_group, "\n", percent(percentage, accuracy = 1))), 
             position = position_fill(vjust = 0.5), 
-            color = "white", fontface = "bold", size = 2.8, lineheight = 0.8) +
+            color = "white", fontface = "bold", size = 4, lineheight = 1) +
   
   scale_y_continuous(labels = scales::percent) +
   scale_fill_manual(values = high_contrast_colors) +
@@ -225,6 +225,7 @@ p2_genre <-
   )
 
 ## (Figure 3) Vocabulary -----------------------------------------
+
 # group_profanity_words() Function in Another File to Avoid Showing Profanity --
 source("visualisations/group_profanity_words.R")
 
@@ -272,14 +273,15 @@ p3_words <-
   )
 
 ## (Figure 4) Correlation --------------------------------------------
+
 # --- Identify the Two Outliers ---
 
-# Outlier A: The Most Explicit Song (Max Profanity)
+# Outlier A: The Most Explicit Song
 top_profanity_outlier <- songs_master %>%
   filter(genre_group == "Hip-Hop/Rap") %>%
-  slice_max(profanity_count, n = 1) # Safer than filter(x == max(x))
+  slice_max(profanity_count, n = 1)
 
-# Outlier B: The Most Popular Song (Max Success)
+# Outlier B: The Most Popular Song
 top_success_outlier <- songs_master %>% 
   filter(genre_group == "Hip-Hop/Rap") %>%
   slice_max(total_success_score, n = 1)
@@ -292,7 +294,7 @@ p4_correlation <-
   ggplot(aes(x = total_success_score, y = profanity_count)) +
   geom_rug(sides = "b", alpha = 0.1, color = "#34495E") +
   geom_jitter(aes(color = profanity_count), 
-              alpha = 0.5, size = 1.8, width = 0.5, height = 0) +
+              alpha = 0.3, size = 1.8, width = 0.5, height = 0) +
   geom_smooth(method = "lm", color = "#ff1100", fill = "grey80", alpha = 0.2, size = 0.8) +
   # Label: Most Explicit
   geom_label_repel(data = top_profanity_outlier, 
@@ -303,15 +305,13 @@ p4_correlation <-
   # Label: Most Successful
   geom_label_repel(data = top_success_outlier,
                    aes(label = paste0("Most Successful:\n", song_name)),
-                   size = 3, fontface = "bold", color = "#117A65", # Professional Green
+                   size = 3, fontface = "bold", color = "#117A65",
                    box.padding = 0.5, point.padding = 0.3,
                    nudge_y = 15, nudge_x = -10) +
 
-  # --- Colors & Scales ---
   scale_color_gradient(low = "#34495E", high = "#E74C3C", guide = "none") +
-  scale_y_continuous(expand = expansion(mult = c(0, 0.15))) + # More headroom for labels
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
   
-  # --- Styling ---
   labs(
     title = "Profanity ≠ Success",
     subtitle = "Scatter plot of Commercial Success vs. Profanity Volume (R = -0.134)",
@@ -328,7 +328,6 @@ p4_correlation <-
     axis.text = element_text(color = "grey40"),
     axis.title.x = element_text(size = 12, face = "bold", color = "#2c3e50", margin = margin(t = 15)),
     axis.title.y = element_text(size = 12, face = "bold", color = "#2c3e50", margin = margin(r = 20))
-    
   )
 
 # --- FINAL COMPOSITE ASSEMBLY ----
@@ -347,8 +346,8 @@ final_composite <- (p1_trend + p2_genre) / (p3_words + p4_correlation) +
   theme(plot.margin = margin(30, 20, 20, 20))
 
 # OUTPUTS -----------------------------------------------------------------
-print(final_composite)
 print(p1_trend)
 print(p2_genre)
 print(p3_words)
 print(p4_correlation)
+print(final_composite)

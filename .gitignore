@@ -30,7 +30,7 @@ figures/
 
 # Exceptions
 !illustrations/**
-!visualisations/images/**
+!visualisation_project/images/**
 
 # System files
 .DS_Store

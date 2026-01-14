@@ -45,7 +45,7 @@ This phenomenon is unique to Hip-Hop/Rap; control groups (Pop, Rock) showed zero
 ├── illustrations/
 │       └── images/
 │              └──screenshots/
-├── visualisations_project/
+├── visualisation_project/
 │   ├── images/
 │   ├── group_profanity_words.R
 │   ├── more-charts-generate.R

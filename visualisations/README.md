@@ -13,7 +13,7 @@ The dashboard below visualises the story of how Hip-Hop lyrics have changed.
 3. **Sales:** Does using more swear words actually make a song more popular?
 
 ### 📊 Composite Visualisation
-![Dashboard Analysis](./visualisations/images/final_composite.png)
+![Dashboard Analysis](./images/final_composite.png)
 
 ### 💡 Key Takeaways
 * **It’s Increasing:** Profanity in Hip-Hop has gone up steadily. In the 90s, songs averaged 5 swear words; by 2018, that number jumped to nearly 15 per song.

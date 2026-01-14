@@ -133,7 +133,7 @@ songs_master <- songs_filtered %>%
   ))
 
 # PLOT --------------------------------------------------------------------
-## (A) Temporal Trend -------------------------------------------------
+## (Figure 1) Temporal Trend -------------------------------------------------
 # Data Prep
 trend_hiphop <- songs_master %>%
   filter(!is.na(release_year) & genre_group == "Hip-Hop/Rap") %>%
@@ -157,16 +157,16 @@ p1_trend <-
             vjust = -0.5, hjust = 0.5, 
             size = 3.5, fontface = "bold", color = "#C0392B") +
   
-  scale_x_continuous(breaks = seq(1990, 2018, by = 4)) + # Clean 4-year intervals
+  scale_x_continuous(breaks = seq(1990, 2018, by = 4)) + # 4-year intervals
   scale_y_continuous(expand = c(0, 0), limits = c(0, max(trend_hiphop$avg_profanity) * 1.2)) + # Remove gap at bottom
   
   labs(
-    title = "The Rising Volume of Profanity",
-    subtitle = "Average number of explicit words per Hip-Hop/Rap song (1990–2018)",
-    x = NULL, # 'Year' is obvious from the numbers, simpler is better
+    title = "The Rise of Profanity in Hip-Hop/Rap",
+    subtitle = "Yearly average of explicit words per song",
+    x = NULL,
     y = "Avg. Profanity Count"
   ) +
-  
+
   theme_minimal(base_size = 14) +
   theme(
     plot.title = element_text(face = "bold", size = 16, color = "#2c3e50"),
@@ -174,13 +174,61 @@ p1_trend <-
     panel.grid.minor = element_blank(),       # Remove minor gridlines (noise)
     panel.grid.major.x = element_blank(),     # Remove vertical lines (let time flow)
     axis.text = element_text(color = "grey40"),
-    axis.title.y = element_text(margin = margin(r = 10), size = 11)
+    axis.title.x = element_text(size = 12, face = "bold", color = "#2c3e50", margin = margin(t = 15)),
+    axis.title.y = element_text(size = 12, face = "bold", color = "#2c3e50", margin = margin(r = 20))
   )
 
-## (B) Vocabulary -----------------------------------------
-# --- 1. Data Prep: Filter, Group, THEN Dynamic Masking ---
+## (Figure 2) Genre Dominance ------------------------------------------
+
+# Dark Maroon (#800000) vs White = 10.94:1
+# Midnight Blue (#003366) vs White = 12.6:1
+high_contrast_colors <- c("Hip-Hop/Rap" = "#800000", "Other" = "#003366")
+
+p2_genre <-
+  songs_master %>%
+  mutate(
+    content_rating = if_else(explicit == TRUE, "Explicit Content", "Clean / Non-Explicit")
+  ) %>%
+  count(content_rating, genre_group) %>%
+  group_by(content_rating) %>%
+  mutate(percentage = n / sum(n)) %>% 
+  
+  ggplot(aes(x = content_rating, y = percentage, fill = genre_group)) +
+  # --- White Divider Lines ---
+  geom_col(position = "fill", width = .6, color = "white", linewidth = 1.5) +
+  # --- Direct Labeling ---
+  geom_text(aes(label = paste0(genre_group, "\n", percent(percentage, accuracy = 1))), 
+            position = position_fill(vjust = 0.5), 
+            color = "white", fontface = "bold", size = 2.8, lineheight = 0.8) +
+  
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = high_contrast_colors) +
+  
+  labs(
+    title = "Defining the 'Explicit' Category",
+    subtitle = "Hip-Hop/Rap accounts for 88% of all explicit tracks in the dataset",
+    x = NULL,
+    y = "Proportion of Tracks"
+  ) +
+  
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "bold", size = 16, color = "#2c3e50"),
+    plot.subtitle = element_text(color = "gray30", size = 12, margin = margin(b = 10)),
+    axis.text.x = element_text(face = "bold", size = 12, color = "black"),
+    legend.position = "none",
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.title.x = element_text(size = 12, face = "bold", color = "#2c3e50", margin = margin(t = 15)),
+    axis.title.y = element_text(size = 12, face = "bold", color = "#2c3e50", margin = margin(r = 20))
+    
+  )
+
+## (Figure 3) Vocabulary -----------------------------------------
+# group_profanity_words() Function in Another File to Avoid Showing Profanity --
 source("visualisations/group_profanity_words.R")
 
+# --- 1. Data Prep: Filter, Group, THEN Dynamic Masking ---
 profanity_freq <- songs_master %>%
   filter(genre_group == "Hip-Hop/Rap") %>% 
   select(song_id, lyrics) %>%
@@ -188,18 +236,18 @@ profanity_freq <- songs_master %>%
   filter(word %in% bad_words_list) %>%
   filter(word != "bum") %>%
   
-  # A. Grouping Logic (Assign the 'Root' word, no suffixes)
+  # --- Grouping Logic (Assign the 'Root' word, no suffixes)
   group_profanity_words() %>%
   
-  # B. Dynamic Masking Step
+  # --- Dynamic Masking Step ---
   mutate(word_display = str_replace_all(word_root, "[aeiou]", "*")) %>%
   count(word_display, sort = TRUE) %>%
   slice_max(n, n = 10)
 
-# --- 2. Plot Chart ---
-p2_words <-
+# ---  Plot Chart ---
+p3_words <-
   ggplot(profanity_freq, aes(x = reorder(word_display, n), y = n)) +
-  geom_col(fill = "#2C3E50", width = 0.7) + 
+  geom_col(fill = "#800000", width = 0.7) + 
   geom_text(aes(label = n), hjust = -0.2, size = 3.5, color = "grey30") +
   
   coord_flip() +
@@ -223,43 +271,8 @@ p2_words <-
     axis.text.y = element_text(color = "black", size = 11, face = "bold") 
   )
 
-## (C) Genre Dominance ------------------------------------------
-p3_genre <-
-  songs_master %>%
-  mutate(
-    content_rating = if_else(explicit == TRUE, "Explicit Content", "Clean / Non-Explicit")
-  ) %>%
-  count(content_rating, genre_group) %>%
-  group_by(content_rating) %>%
-  mutate(percentage = n / sum(n)) %>% 
-  
-  ggplot(aes(x = content_rating, y = percentage, fill = genre_group)) +
-  geom_col(position = "fill", width = 0.6) +
-  geom_text(aes(label = percent(percentage, accuracy = 1)), 
-            position = position_fill(vjust = 0.5), 
-            color = "white", fontface = "bold", size = 5) +
-  
-  scale_y_continuous(labels = scales::percent) +
-  scale_fill_manual(values = c("Hip-Hop/Rap" = "firebrick", "Other" = "#4682B4")) +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(face = "bold", size = 14),
-    plot.subtitle = element_text(color = "gray30", size = 10),
-    axis.text.x = element_text(face = "bold", size = 11),
-    legend.position = "top",
-    panel.grid.major.x = element_blank()
-  ) +
-  
-  labs(
-    title = "Genre Dominance: Explicit vs. Clean Music",
-    subtitle = "Proportion of Hip-Hop/Rap within explicit and non-explicit tracks (Dataset: 1990-2018)",
-    x = NULL,
-    y = "Proportion",
-    fill = "Genre"
-  )
-
-## (D) Correlation --------------------------------------------
-# --- 1. Identify the Two Outliers ---
+## (Figure 4) Correlation --------------------------------------------
+# --- Identify the Two Outliers ---
 
 # Outlier A: The Most Explicit Song (Max Profanity)
 top_profanity_outlier <- songs_master %>%
@@ -271,7 +284,7 @@ top_success_outlier <- songs_master %>%
   filter(genre_group == "Hip-Hop/Rap") %>%
   slice_max(total_success_score, n = 1)
 
-# --- 2. The Aesthetic Plot ---
+# --- Plot Chart ---
 p4_correlation <- 
   songs_master %>%
   filter(genre_group == "Hip-Hop/Rap") %>% 
@@ -280,36 +293,28 @@ p4_correlation <-
   geom_rug(sides = "b", alpha = 0.1, color = "#34495E") +
   geom_jitter(aes(color = profanity_count), 
               alpha = 0.5, size = 1.8, width = 0.5, height = 0) +
-  geom_smooth(method = "lm", color = "#2C3E50", fill = "grey80", alpha = 0.2, size = 0.8) +
-  
-  # 4a. Label: Most Explicit (RED)
+  geom_smooth(method = "lm", color = "#ff1100", fill = "grey80", alpha = 0.2, size = 0.8) +
+  # Label: Most Explicit
   geom_label_repel(data = top_profanity_outlier, 
                    aes(label = paste0("Most Explicit:\n", song_name)),
                    size = 3, fontface = "bold", color = "#C0392B", 
                    box.padding = 0.5, point.padding = 0.3,
                    nudge_y = 10, nudge_x = -5) +
-  
-  # 4b. Label: Most Successful (GREEN/TEAL)
+  # Label: Most Successful
   geom_label_repel(data = top_success_outlier,
                    aes(label = paste0("Most Successful:\n", song_name)),
                    size = 3, fontface = "bold", color = "#117A65", # Professional Green
                    box.padding = 0.5, point.padding = 0.3,
                    nudge_y = 15, nudge_x = -10) +
-  
-  # 5. Annotation: Stats
-  stat_cor(method = "pearson", 
-           label.x.npc = "left", label.y.npc = "top",
-           size = 4, fontface = "italic", color = "#2C3E50",
-           p.accuracy = 0.01, r.accuracy = 0.001) +
-  
-  # 6. Colors & Scales
+
+  # --- Colors & Scales ---
   scale_color_gradient(low = "#34495E", high = "#E74C3C", guide = "none") +
   scale_y_continuous(expand = expansion(mult = c(0, 0.15))) + # More headroom for labels
   
-  # 7. Styling
+  # --- Styling ---
   labs(
-    title = "Does Profanity Drive Commercial Success?",
-    subtitle = "Correlation between commercial success and explicit content volume",
+    title = "Profanity ≠ Success",
+    subtitle = "Scatter plot of Commercial Success vs. Profanity Volume (R = -0.134)",
     x = "Total Success Score",
     y = "Profanity Count per Song"
   ) +
@@ -320,24 +325,30 @@ p4_correlation <-
     panel.grid.minor = element_blank(),
     panel.grid.major = element_line(color = "grey92"),
     axis.title = element_text(size = 12, face = "bold", color = "#2c3e50"),
-    axis.text = element_text(color = "grey40")
+    axis.text = element_text(color = "grey40"),
+    axis.title.x = element_text(size = 12, face = "bold", color = "#2c3e50", margin = margin(t = 15)),
+    axis.title.y = element_text(size = 12, face = "bold", color = "#2c3e50", margin = margin(r = 20))
+    
   )
 
 # --- FINAL COMPOSITE ASSEMBLY ----
-# Layout: 
-# Top Row: Temporal Trend (A) | Genre Dominance (C)
-# Bottom Row: Vocabulary (B)  | Correlation (D)
-final_composite <- (p1_trend + p3_genre) / 
-  (p2_words + p4_correlation) +
+final_composite <- (p1_trend + p2_genre) / (p3_words + p4_correlation) +
   
   plot_annotation(
     title = "The Normalisation of Explicit Content in Hip-Hop (1990-2018)",
-    subtitle = "A multi-faceted analysis of volume, genre dominance, vocabulary, and commercial viability",
-    caption = "Data Source: [Your Dataset] | Visualisation by Student [ID]",
+    subtitle = "A composite analysis of temporal escalation, genre identity, lexical specificity, and commercial incentives",
+    caption = "Data Source: MusicOSet (Silva et al., 2019) | Visualisation: [250125188]",
     theme = theme(
       plot.title = element_text(size = 22, face = "bold", hjust = 0.5, color = "#2c3e50"),
-      plot.subtitle = element_text(size = 14, hjust = 0.5, color = "grey50", margin = margin(b = 20))
+      plot.subtitle = element_text(size = 14, hjust = 0.5, color = "grey50", margin = margin(b = 20)),
+      plot.caption = element_text(size = 10, color = "grey60", face = "italic", hjust = 1)
     )
-  )
+  ) & 
+  theme(plot.margin = margin(30, 20, 20, 20))
 
+# OUTPUTS -----------------------------------------------------------------
 print(final_composite)
+print(p1_trend)
+print(p2_genre)
+print(p3_words)
+print(p4_correlation)

@@ -1,7 +1,7 @@
 ## 🎵 Hip-Hop/Rap Songs Analysis (1990–2018)
 
 ### 📌 Project Overview
-This project investigates the relationship between **explicit lyrics** and **commercial success** in Hip-Hop music during the digital era (1990–2018). Using the [**Musicoset**](https://marianaossilva.github.io/DSW2019/index.html#tables) dataset, we apply text mining and statistical regression to challenge the popular assumption that "vulgarity sells."
+This project investigates the relationship between **explicit lyrics** and **commercial success** in Hip-Hop/Rap music during the digital era (1990–2018). Using the [**Musicoset**](https://marianaossilva.github.io/DSW2019/index.html#tables) dataset, we apply text mining and statistical regression to challenge the popular assumption that "vulgarity sells."
 
 **Key Research Questions:**
 1. How has profanity density in Hip-hop/Rap music evolved over time (1990–2018)?
@@ -11,11 +11,11 @@ This project investigates the relationship between **explicit lyrics** and **com
 
 ### 📊 Key Findings  
 * **The "Streaming Effect"**  
-Profanity density in Hip-Hop spiked post-2010, directly correlating with the industry shift from radio censorship to on-demand streaming.  
+Profanity density in Hip-Hop/Rap spiked post-2010, directly correlating with the industry shift from radio censorship to on-demand streaming.  
 * **Commercial Liability**  
 Contrary to the "shock value" hypothesis, regression analysis reveals a negative correlation ($r = -0.134$) between explicit content and chart popularity.  
 * **Genre Isolation**  
-This phenomenon is unique to Hip-Hop; control groups (Pop, Rock) showed zero correlation ($r \approx 0$) between profanity and success.
+This phenomenon is unique to Hip-Hop/Rap; control groups (Pop, Rock) showed zero correlation ($r \approx 0$) between profanity and success.
 
 ---
 
@@ -30,14 +30,14 @@ This phenomenon is unique to Hip-Hop; control groups (Pop, Rock) showed zero cor
 ### 📂 Repository Structure
 ```bash
 ├── datasets/
-│   ├── musicoset_metadata/
+│   ├── musicoset_metadata/      # (Local Only) Place and extract `musicoset_metadata.zip` here
 │   │   ├── artists.csv
 │   │   ├── songs.csv
 │   │   └── tracks.csv
-│   ├── musicoset_popularity/
+│   ├── musicoset_popularity/    # (Local Only) Place and extract `musicoset_popularity.zip` here
 │   │   ├── song_chart.csv
 │   │   └── song_pop.csv
-│   ├── musicoset_songfeatures/
+│   ├── musicoset_songfeatures/  # (Local Only) Place and extract `musicoset_songfeatures.zip` here
 │   │   ├── acoustic_features.csv
 │   │   └── lyrics.csv
 │   └── profanity_lexicon/
@@ -45,6 +45,11 @@ This phenomenon is unique to Hip-Hop; control groups (Pop, Rock) showed zero cor
 ├── illustrations/
 │       └── images/
 │              └──screenshots/
+├── visualisations_project/
+│   ├── images/
+│   ├── group_profanity_words.R
+│   ├── more-charts-generate.R
+│   └── README.md
 ├── main.R
 ├── musicoset-hiphop-analysis.Rproj
 └── README.md
